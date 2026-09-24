@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; media-src 'self' blob:; connect-src 'self' https:; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#e1306c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Postar">
+  <title>Postar no Instagram + TikTok</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="stylesheet" href="style.css?v=1">
+  <script type="module" src="app.js?v=1"></script>
+</head>
+<body>
+  <header class="top">
+    <h1>Postar no Instagram + TikTok</h1>
+    <button id="settings-btn" class="icon-btn" type="button" aria-label="Configurações" hidden>⚙</button>
+  </header>
+
+  <main>
+    <noscript><p class="message">Ative o JavaScript para usar esta página.</p></noscript>
+    <div id="message" class="message" role="alert" hidden></div>
+
+    <section id="setup" class="card" hidden>
+      <h2>Configurar este aparelho</h2>
+      <p>Escaneie o QR code gerado no computador, ou cole abaixo a sua chave da API da Zernio.</p>
+      <label for="key-input">Chave da API</label>
+      <input id="key-input" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk_…">
+      <button id="key-save" class="primary" type="button">Salvar chave</button>
+      <p class="muted small">A chave fica salva só neste aparelho e é enviada apenas para a Zernio.</p>
+    </section>
+
+    <section id="settings" class="card" hidden>
+      <h2>Configurações</h2>
+      <p id="key-status" class="muted"></p>
+      <div class="row">
+        <button id="accounts-refresh" type="button">Atualizar contas</button>
+        <button id="key-forget" type="button" class="danger">Esquecer a chave</button>
+      </div>
+      <p class="muted small">Contas e chaves também podem ser gerenciadas no <a href="https://zernio.com/dashboard" target="_blank" rel="noopener noreferrer">painel da Zernio</a>.</p>
+    </section>
+
+    <div id="app" hidden>
+      <section class="card">
+        <h2>Vídeo</h2>
+        <label class="button primary file-button">Escolher vídeo
+          <input id="video-input" type="file" accept="video/*,.mp4,.mov,.m4v,.webm">
+        </label>
+        <video id="video-preview" playsinline muted controls preload="auto" hidden></video>
+        <p id="video-info" class="muted">Nenhum vídeo escolhido.</p>
+        <ul id="video-issues" class="issues"></ul>
+      </section>
+
+      <section class="card">
+        <h2>Legenda</h2>
+        <textarea id="caption" rows="5" placeholder="Escreva a legenda (a mesma nas duas redes)…"></textarea>
+        <p id="caption-count" class="muted small right">0/2200 caracteres • 0 hashtags</p>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>Instagram</h2>
+          <button id="ig-connect" class="small" type="button">Conectar</button>
+        </div>
+        <label class="check"><input id="ig-enabled" type="checkbox" checked> Publicar no Instagram</label>
+        <select id="ig-account" aria-label="Conta do Instagram" hidden></select>
+        <p id="ig-status" class="muted small" hidden></p>
+        <div class="segmented" role="radiogroup" aria-label="Formato do Instagram">
+          <label><input type="radio" name="ig-format" value="reels" checked> Reels</label>
+          <label><input type="radio" name="ig-format" value="story"> Stories</label>
+        </div>
+        <div id="ig-reels-options">
+          <label class="check"><input id="ig-feed" type="checkbox" checked> Mostrar também no feed (além da aba Reels)</label>
+        </div>
+        <p id="ig-story-note" class="muted small" hidden>Stories ficam 24 h no ar, não mostram legenda e aceitam vídeos de até 60 s.</p>
+        <label class="check"><input id="ig-ai" type="checkbox"> Rotular como conteúdo gerado por IA</label>
+      </section>
+
+      <section id="cover-card" class="card" hidden>
+        <h2>Capa</h2>
+        <div class="segmented" role="radiogroup" aria-label="Capa">
+          <label><input type="radio" name="cover-mode" value="default" checked> Padrão</label>
+          <label><input type="radio" name="cover-mode" value="frame"> Quadro</label>
+          <label><input type="radio" name="cover-mode" value="image"> Imagem</label>
+        </div>
+        <div id="cover-frame-box" hidden>
+          <input id="cover-range" type="range" min="0" max="0" step="0.1" value="0" aria-label="Momento do vídeo para a capa">
+          <p id="cover-time" class="muted small center">0:00</p>
+        </div>
+        <div id="cover-image-box" hidden>
+          <label class="button file-button">Escolher imagem da galeria
+            <input id="cover-input" type="file" accept="image/*">
+          </label>
+        </div>
+        <div class="cover-preview">
+          <canvas id="cover-canvas" width="270" height="480" hidden></canvas>
+          <img id="cover-img" alt="Prévia da capa" hidden>
+        </div>
+        <div id="cover-targets" hidden>
+          <label class="check"><input id="cover-ig" type="checkbox" checked> Usar no Instagram (Reels)</label>
+          <label class="check"><input id="cover-tt" type="checkbox" checked> Usar no TikTok</label>
+        </div>
+        <p id="cover-note" class="muted small"></p>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2>TikTok</h2>
+          <button id="tt-connect" class="small" type="button">Conectar</button>
+        </div>
+        <label class="check"><input id="tt-enabled" type="checkbox" checked> Publicar no TikTok</label>
+        <select id="tt-account" aria-label="Conta do TikTok" hidden></select>
+        <p id="tt-status" class="muted small" hidden></p>
+        <label for="tt-privacy" class="field-label">Quem pode ver</label>
+        <select id="tt-privacy"><option value="" disabled selected>Selecione…</option></select>
+        <p id="tt-privacy-note" class="muted small">Vídeo publicado direto em contas do TikTok for Business só pode ser Público; para outra opção, use o rascunho.</p>
+        <fieldset>
+          <legend>Permitir</legend>
+          <label class="check"><input id="tt-comment" type="checkbox"> Comentários</label>
+          <label class="check"><input id="tt-duet" type="checkbox"> Dueto</label>
+          <label class="check"><input id="tt-stitch" type="checkbox"> Stitch</label>
+        </fieldset>
+        <label class="check"><input id="tt-draft" type="checkbox"> Enviar como rascunho (você finaliza no app do TikTok)</label>
+        <label class="check"><input id="tt-commercial" type="checkbox"> Divulgar conteúdo comercial</label>
+        <div id="tt-commercial-options" class="indent" hidden>
+          <label class="check"><input id="tt-brand" type="checkbox"> Sua marca</label>
+          <label class="check"><input id="tt-branded" type="checkbox"> Conteúdo de marca (parceria paga)</label>
+          <p id="tt-commercial-note" class="muted small"></p>
+        </div>
+        <label class="check"><input id="tt-ai" type="checkbox"> Rotular como conteúdo gerado por IA</label>
+        <p class="muted small">Ao publicar, você concorda com a <a href="https://www.tiktok.com/legal/page/global/music-usage-confirmation/en" target="_blank" rel="noopener noreferrer">Confirmação de Uso de Música do TikTok</a>.</p>
+      </section>
+
+      <section class="card">
+        <h2>Publicar</h2>
+        <label class="check"><input id="consent" type="checkbox"> Revisei o vídeo e a legenda e autorizo a publicação</label>
+        <button id="publish-btn" class="primary big" type="button" disabled>Publicar</button>
+        <div id="progress-box" hidden>
+          <progress id="progress" max="100"></progress>
+          <p id="progress-label" class="muted small"></p>
+        </div>
+        <ul id="log" class="log"></ul>
+        <div class="row">
+          <button id="retry-btn" type="button" hidden>Tentar de novo as falhas</button>
+          <button id="refresh-btn" type="button" hidden>Atualizar status</button>
+          <button id="new-btn" type="button" hidden>Nova publicação</button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="muted small">A chave da API fica salva só neste aparelho.</footer>
+</body>
+</html>
