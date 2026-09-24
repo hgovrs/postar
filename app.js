@@ -1,5 +1,5 @@
-import { analyzeMp4, faststart } from "./mp4.js?v=1";
-import { uploadWithProgress, ZernioApi } from "./api.js?v=1";
+import { analyzeMp4, faststart } from "./mp4.js?v=2";
+import { uploadWithProgress, ZernioApi } from "./api.js?v=2";
 import {
   CAPTION_MAX,
   CONTENT_TYPES,
@@ -21,7 +21,7 @@ import {
   safeFilename,
   statusLabel,
   validateRequest,
-} from "./rules.js?v=1";
+} from "./rules.js?v=2";
 
 const KEY_STORAGE = "postar.zernioKey";
 const LAST_POST_STORAGE = "postar.lastPost";

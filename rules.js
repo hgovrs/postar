@@ -306,6 +306,9 @@ export function describePlatform(result, { draftRequested = false } = {}) {
 export function friendlyError(error) {
   const status = error?.status;
   if (status === 401) return "A Zernio recusou a chave da API. Configure a chave de novo (menu ⚙).";
+  if (status === 402 && error.payload?.reason === "free_tier_exceeded") {
+    return "O plano grátis da Zernio permite 2 contas e as duas já estão em uso. Para conectar ou trocar uma conta, use o painel da Zernio (zernio.com) ou adicione um cartão lá.";
+  }
   if (status === 402) return `A Zernio exige um método de pagamento para esta ação: ${error.message}`;
   if (status === 403) return `A chave não tem permissão para esta ação: ${error.message}`;
   if (status === 409) return "Este mesmo conteúdo já foi publicado nesta conta nas últimas 24 h. Mude a legenda ou o vídeo.";

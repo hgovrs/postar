@@ -237,6 +237,8 @@ describe("resultado", () => {
 
   test("mensagens de erro amigáveis", () => {
     assert.match(friendlyError({ status: 401, message: "x" }), /chave/);
+    assert.match(friendlyError({ status: 402, message: "x", payload: { code: "PAYMENT_REQUIRED", reason: "free_tier_exceeded" } }), /2 contas/);
+    assert.match(friendlyError({ status: 402, message: "pague", payload: {} }), /pagamento.*pague/);
     assert.match(friendlyError({ status: 409, message: "x" }), /24 h/);
     assert.match(friendlyError({ status: null, message: "falha de conexão" }), /Sem conexão/);
   });
